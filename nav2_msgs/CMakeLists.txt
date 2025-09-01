@@ -59,9 +59,3 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()
-
-
-현재 나는 ROS2와 Nav2를 이용해서 모바일 로봇을 이용한 공기 청정 알고리즘을 구성하려고 한다.
-여기서 나는 Agent.py 코드 밖에 수정하지 못하며, __init__에서 받는 인자를 변경할 수 없다.
-이런 상황에서 nav2를 실행하여 a 포인트에서 b 포인트로 이동시키고 싶다. 
-어떻게 해야하는가?
