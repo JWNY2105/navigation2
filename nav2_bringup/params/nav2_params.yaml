@@ -6,7 +6,7 @@ amcl:
     alpha3: 0.2
     alpha4: 0.2
     alpha5: 0.2
-    base_frame_id: "base_footprint"
+    base_frame_id: "base_link"
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
@@ -37,7 +37,7 @@ amcl:
     z_max: 0.05
     z_rand: 0.5
     z_short: 0.05
-    scan_topic: scan
+    scan_topic: robot_0/base_sensor_lidar_front_controller/out
 
 bt_navigator:
   ros__parameters:
@@ -183,8 +183,8 @@ controller_server:
 local_costmap:
   local_costmap:
     ros__parameters:
-      update_frequency: 5.0
-      publish_frequency: 2.0
+      update_frequency: 20.0
+      publish_frequency: 20.0
       global_frame: odom
       robot_base_frame: base_link
       use_sim_time: True
@@ -193,11 +193,35 @@ local_costmap:
       height: 3
       resolution: 0.05
       robot_radius: 0.22
-      plugins: ["voxel_layer", "inflation_layer"]
+      plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         inflation_radius: 0.55
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
+        enabled: True
+        observation_sources: front_scan
+        front_scan:
+          topic: robot_0/base_sensor_lidar_front_controller/out
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+        back_scan:
+          topic: robot_0/base_sensor_lidar_back_controller/out
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -226,8 +250,8 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 10.0
+      publish_frequency: 10.0
       global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
@@ -238,9 +262,19 @@ global_costmap:
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: scan
-        scan:
-          topic: /scan
+        observation_sources: front_scan
+        front_scan:
+          topic: robot_0/base_sensor_lidar_front_controller/out
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          raytrace_min_range: 0.0
+          obstacle_max_range: 2.5
+          obstacle_min_range: 0.0
+        back_scan:
+          topic: robot_0/base_sensor_lidar_back_controller/out
           max_obstacle_height: 2.0
           clearing: True
           marking: True
