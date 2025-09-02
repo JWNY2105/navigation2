@@ -18,8 +18,8 @@ amcl:
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
     max_beams: 60
-    max_particles: 2000
-    min_particles: 500
+    max_particles: 4010
+    min_particles: 4000
     odom_frame_id: "odom"
     pf_err: 0.05
     pf_z: 0.99
@@ -201,7 +201,7 @@ local_costmap:
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        observation_sources: front_scan
+        observation_sources: front_scan back_scan
         front_scan:
           topic: robot_0/base_sensor_lidar_front_controller/out
           max_obstacle_height: 2.0
