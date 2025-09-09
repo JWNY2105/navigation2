@@ -145,7 +145,7 @@ controller_server:
       min_vel_y: 0.0
       max_vel_x: 0.85
       max_vel_y: 0.0
-      max_vel_theta: 1.0
+      max_vel_theta: 0.5
       min_speed_xy: 0.0
       max_speed_xy: 0.85
       min_speed_theta: 0.0
@@ -153,16 +153,16 @@ controller_server:
       # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
       acc_lim_x: 2.5
       acc_lim_y: 0.0
-      acc_lim_theta: 3.2
+      acc_lim_theta: 1.6
       decel_lim_x: -2.5
       decel_lim_y: 0.0
-      decel_lim_theta: -3.2
+      decel_lim_theta: -1.6
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
       sim_time: 1.7
       linear_granularity: 0.05
-      angular_granularity: 0.025
+      angular_granularity: 0.015
       transform_tolerance: 0.2
       xy_goal_tolerance: 0.25
       trans_stopped_velocity: 0.25
@@ -170,13 +170,13 @@ controller_server:
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
       BaseObstacle.scale: 0.02
-      PathAlign.scale: 32.0
-      PathAlign.forward_point_distance: 0.1
+      PathAlign.scale: 50.0
+      PathAlign.forward_point_distance: 0.15
       GoalAlign.scale: 24.0
       GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 32.0
+      PathDist.scale: 40.0
       GoalDist.scale: 24.0
-      RotateToGoal.scale: 32.0
+      RotateToGoal.scale: 20.0
       RotateToGoal.slowing_factor: 5.0
       RotateToGoal.lookahead_time: -1.0
 
@@ -188,6 +188,7 @@ local_costmap:
       global_frame: odom
       robot_base_frame: base_link
       use_sim_time: True
+      lethal_cost_threshold: 110
       rolling_window: true
       width: 3
       height: 3
@@ -196,8 +197,8 @@ local_costmap:
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 10.0
+        inflation_radius: 1.0
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -254,6 +255,7 @@ global_costmap:
       publish_frequency: 10.0
       global_frame: map
       robot_base_frame: base_link
+      lethal_cost_threshold: 100
       use_sim_time: True
       robot_radius: 0.22
       resolution: 0.05
@@ -269,9 +271,11 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          max_obstacle_range: 10.0  # 기본 2.5에서 10.0으로 증가
+          max_raytrace_range: 12.0  # 기본 3.0에서 12.0으로 증가
+          raytrace_max_range: 12.0
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
+          obstacle_max_range: 10.0
           obstacle_min_range: 0.0
         back_scan:
           topic: robot_0/base_sensor_lidar_back_controller/out
@@ -288,8 +292,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 10.0
+        inflation_radius: 5.0
       always_send_full_costmap: True
 
 map_server:
@@ -315,8 +319,14 @@ planner_server:
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
       tolerance: 0.5
-      use_astar: false
+      use_astar: true
       allow_unknown: true
+      # 더 먼 거리 계획을 위한 설정
+      use_final_approach_orientation: false
+      # 계산 범위 확장
+      cost_factor: 3.0  # 기본값보다 높게 설정
+      neutral_cost: 50  # 중성 비용 증가
+      scale: 3.0        # 스케일 팩터 증가
 
 smoother_server:
   ros__parameters:
