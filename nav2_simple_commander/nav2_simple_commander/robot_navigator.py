@@ -523,7 +523,7 @@ class BasicNavigator(Node):
                 while not mgr_client.wait_for_service(timeout_sec=1.0):
                     self.info(f'{srv_name} service not available, waiting...')
                 req = ManageLifecycleNodes.Request()
-                req.command = ManageLifecycleNodes.Request().SHUTDOWN
+                req.command = ManageLifecycleNodes.Request().RESET
                 future = mgr_client.call_async(req)
                 rclpy.spin_until_future_complete(self, future)
                 future.result()
