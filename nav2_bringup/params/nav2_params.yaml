@@ -165,7 +165,7 @@ controller_server:
       rotate_to_heading_angular_vel: 3.5  # 회전 속도 감소 (불규칙 방지)
       max_angular_accel: 6.0
       simulate_ahead_time: 1.0
-      rotate_to_goal_heading: false  # 필요 시 true
+      rotate_to_goal_heading: true  # 필요 시 true
 
       min_vel_x: 0.0
       min_vel_y: 0.0
